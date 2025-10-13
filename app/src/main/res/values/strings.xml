@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ABM.ai</string>
+
+    <!-- Dashboard Categories -->
+    <string name="category_inventory">Inventory</string>
+    <string name="category_demand">Product Demands</string>
+    <string name="category_operations">Schedule &amp; DF</string>
+    <string name="category_ai">AI ChatBot Tools</string>
+    <string name="category_control">CHASCOmobile</string>
+
+    <!-- Dashboard Names -->
+    <string name="dashboard_chameleon">Chameleon Inventory</string>
+    <string name="dashboard_admix">Admix Inventory</string>
+    <string name="dashboard_inventory_submission">Inventory Submission</string>
+    <string name="dashboard_concrete_demand">Concrete Demand</string>
+    <string name="dashboard_asphalt_demand">Asphalt Demand</string>
+    <string name="dashboard_ac_oil">AC Oil Demand</string>
+    <string name="dashboard_powder">Powder Demand</string>
+    <string name="dashboard_raw_materials">All Raw Material Demands</string>
+    <string name="dashboard_driver_schedule">Driver Schedule</string>
+    <string name="dashboard_concrete_quote_ai">Concrete Quote AI</string>
+    <string name="dashboard_mix_design">Mix Design Assist</string>
+    <string name="dashboard_chasco">CHASCOmobile</string>
+
+    <!-- General UI -->
+    <string name="loading">Loading…</string>
+    <string name="error_loading">Error loading dashboard</string>
+    <string name="retry">Retry</string>
+    <string name="back">Back</string>
+    <string name="refresh">Refresh</string>
+</resources>

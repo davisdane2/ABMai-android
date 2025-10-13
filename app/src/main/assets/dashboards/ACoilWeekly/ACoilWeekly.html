@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asphalt Oil Demand Forecast</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .summary-card {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+        .summary-card.total {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+        .card-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        .card-value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+        .card-unit {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .plant-section {
+            margin-bottom: 40px;
+        }
+        .plant-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+            color: #495057;
+            border: 1px solid #dee2e6;
+        }
+        th:first-child {
+            text-align: left;
+            width: 200px;
+        }
+        td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+        td:first-child {
+            text-align: left;
+            font-weight: 500;
+            background: #f8f9fa;
+        }
+        .total-row {
+            background: #d4edda;
+            font-weight: bold;
+        }
+        .total-row td {
+            background: #d4edda;
+        }
+        .qty-cell {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+        .oil-tons {
+            color: #e74c3c;
+        }
+        .product-tons {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        tr:hover:not(.total-row) {
+            background: #f5f5f5;
+        }
+        .empty-cell {
+            color: #ccc;
+        }
+        .info-box {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 4px;
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .info-box ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .info-box li {
+            color: #856404;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⛽ Asphalt Oil Demand Forecast</h1>
+        <p class="subtitle">5 Day Schedule - Oil Content Analysis</p>
+        
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card">
+                <div class="card-label">Sun 9/29</div>
+                <div class="card-value">11.78</div>
+                <div class="card-unit">tons oil</div>
+            </div>
+            <div class="summary-card">
+                <div class="card-label">Mon 9/30</div>
+                <div class="card-value">0.91</div>
+                <div class="card-unit">tons oil</div>
+            </div>
+            <div class="summary-card">
+                <div class="card-label">Tue 10/1</div>
+                <div class="card-value">0.00</div>
+                <div class="card-unit">tons oil</div>
+            </div>
+            <div class="summary-card">
+                <div class="card-label">Wed 10/2</div>
+                <div class="card-value">37.14</div>
+                <div class="card-unit">tons oil</div>
+            </div>
+            <div class="summary-card">
+                <div class="card-label">Thu 10/3</div>
+                <div class="card-value">72.85</div>
+                <div class="card-unit">tons oil</div>
+            </div>
+            <div class="summary-card total">
+                <div class="card-label">5-Day Total</div>
+                <div class="card-value">122.68</div>
+                <div class="card-unit">tons oil</div>
+            </div>
+        </div>
+
+        <!-- ASPHALT PLANT SECTION -->
+        <div class="plant-section">
+            <div class="plant-header">ASPHALT PLANT - OIL REQUIREMENTS</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product #</th>
+                        <th>Sun 9/29</th>
+                        <th>Mon 9/30</th>
+                        <th>Tue 10/1</th>
+                        <th>Wed 10/2</th>
+                        <th>Thu 10/3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0021 (5.65% oil)</td>
+                        <td class="qty-cell">
+                            <span class="oil-tons">4.41</span><br>
+                            <span class="product-tons">(78 tons)</span>
+                        </td>
+                        <td class="qty-cell empty-cell">-</td>
+                        <td class="qty-cell empty-cell">-</td>
+                        <td class="qty-cell empty-cell">-</td>
+                        <td class="qty-cell empty-cell">-</td>
+                    </tr>
+                    <tr>
+                        <td>0027 (5.05% oil)</td>
+                        <td class="qty-cell">
+                            <span class="oil-tons">7.37</span><br>
+                            <span class="product-tons">(146 tons)</span>
+                        </td>
+                        <td class="qty-cell">
+                            <span class="oil-tons">0.91</span><br>
+                            <span class="product-tons">(18 tons)</span>
+                        </td>
+                        <td class="qty-cell empty-cell">-</td>
+                        <td class="qty-cell">
+                            <span class="oil-tons">6.06</span><br>
+                            <span class="product-tons">(120 tons)</span>
+                        </td>
+                        <td class="qty-cell">
+                            <span class="oil-tons">5.05</span><br>
+                            <span class="product-tons">(100 tons)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>0040 (5.65% oil)</td>
+                        <td class="qty-cell empty-cell">-</td>
+                        <td class="qty-cell empty-cell">-</td>
+                        <td class="qty-cell empty-cell">-</td>
+                        <td class="qty-cell">
+                            <span class="oil-tons">31.08</span><br>
+                            <span class="product-tons">(550 tons)</span>
+                        </td>
+                        <td class="qty-cell">
+                            <span class="oil-tons">67.80</span><br>
+                            <span class="product-tons">(1,200 tons)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>0050 Cutback*</td>
+                        <td class="qty-cell">
+                            <span class="product-tons">(25 tons)</span>
+                        </td>
+                        <td class="qty-cell empty-cell">-</td>
+                        <td class="qty-cell empty-cell">-</td>
+                        <td class="qty-cell empty-cell">-</td>
+                        <td class="qty-cell empty-cell">-</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td><strong>TOTAL OIL (TONS)</strong></td>
+                        <td class="qty-cell"><strong>11.78</strong></td>
+                        <td class="qty-cell"><strong>0.91</strong></td>
+                        <td class="qty-cell empty-cell"><strong>-</strong></td>
+                        <td class="qty-cell"><strong>37.14</strong></td>
+                        <td class="qty-cell"><strong>72.85</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="info-box">
+            <h3>📊 Oil Content Reference</h3>
+            <ul>
+                <li><strong>0021</strong> (1/2 Fine AC): 5.65% oil content</li>
+                <li><strong>0027</strong> (1/2 HMA): 5.05% oil content</li>
+                <li><strong>0024</strong> (1/2" HMA): 5.55% oil content</li>
+                <li><strong>0001</strong> (3/4 HMA): 5.00% oil content</li>
+                <li><strong>0007</strong> (3/4 HMA): 4.85% oil content</li>
+                <li><strong>0040</strong> (3/8 HMA): 5.65% oil content</li>
+                <li><strong>*Cutback</strong>: Oil percentage not specified in knowledge base</li>
+            </ul>
+            <p><strong>Note:</strong> Oil tons are calculated by multiplying product tonnage by the oil content percentage.</p>
+        </div>
+    </div>
+</body>
+</html>

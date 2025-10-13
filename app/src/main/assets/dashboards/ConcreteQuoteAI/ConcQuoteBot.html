@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concrete Quote AI</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: #007AFF;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .form-container {
+            padding: 20px;
+            min-height: 600px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #007AFF;
+        }
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+        .submit-btn {
+            background: #007AFF;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        .submit-btn:hover {
+            background: #0056b3;
+        }
+        .quote-result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #007AFF;
+            display: none;
+        }
+        .quote-result h3 {
+            margin-top: 0;
+            color: #007AFF;
+        }
+        .quote-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .quote-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .quote-item strong {
+            color: #333;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007AFF;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Concrete Quote AI Assistant</h1>
+            <p>Get instant quotes and assistance for your concrete projects</p>
+        </div>
+        <div class="form-container">
+            <form id="quoteForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="projectName">Project Name</label>
+                        <input type="text" id="projectName" name="projectName" placeholder="Enter project name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerName">Customer Name</label>
+                        <input type="text" id="customerName" name="customerName" placeholder="Enter customer name" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="concreteType">Concrete Type</label>
+                        <select id="concreteType" name="concreteType" required>
+                            <option value="">Select concrete type</option>
+                            <option value="standard">Standard (3000 PSI)</option>
+                            <option value="high-strength">High Strength (4000+ PSI)</option>
+                            <option value="decorative">Decorative/Stamped</option>
+                            <option value="self-consolidating">Self-Consolidating (SCC)</option>
+                            <option value="fiber-reinforced">Fiber Reinforced</option>
+                            <option value="permeable">Permeable</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="volume">Volume (Cubic Yards)</label>
+                        <input type="number" id="volume" name="volume" placeholder="Enter volume" min="1" step="0.1" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deliveryDate">Delivery Date</label>
+                        <input type="date" id="deliveryDate" name="deliveryDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deliveryTime">Preferred Time</label>
+                        <select id="deliveryTime" name="deliveryTime">
+                            <option value="morning">Morning (6AM-12PM)</option>
+                            <option value="afternoon">Afternoon (12PM-6PM)</option>
+                            <option value="evening">Evening (6PM-10PM)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="location">Delivery Location</label>
+                        <input type="text" id="location" name="location" placeholder="Enter delivery address" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="specialRequirements">Special Requirements</label>
+                        <select id="specialRequirements" name="specialRequirements">
+                            <option value="none">None</option>
+                            <option value="pump">Concrete Pump Required</option>
+                            <option value="crane">Crane Required</option>
+                            <option value="weekend">Weekend Delivery</option>
+                            <option value="rush">Rush Order</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="additionalNotes">Additional Notes</label>
+                    <textarea id="additionalNotes" name="additionalNotes" rows="3" placeholder="Any additional requirements or notes..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Generate Quote</button>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Generating your quote...</p>
+            </div>
+
+            <div class="quote-result" id="quoteResult">
+                <h3>Your Concrete Quote</h3>
+                <div class="quote-details" id="quoteDetails">
+                    <!-- Quote details will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('quoteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('quoteResult').style.display = 'none';
+            
+            // Simulate AI processing time
+            setTimeout(() => {
+                generateQuote();
+            }, 2000);
+        });
+
+        function generateQuote() {
+            const formData = new FormData(document.getElementById('quoteForm'));
+            const data = Object.fromEntries(formData);
+            
+            // Calculate pricing based on inputs
+            const basePrice = 120; // Base price per cubic yard
+            let multiplier = 1;
+            
+            // Adjust based on concrete type
+            switch(data.concreteType) {
+                case 'high-strength': multiplier += 0.3; break;
+                case 'decorative': multiplier += 0.4; break;
+                case 'self-consolidating': multiplier += 0.25; break;
+                case 'fiber-reinforced': multiplier += 0.2; break;
+                case 'permeable': multiplier += 0.35; break;
+            }
+            
+            // Adjust for special requirements
+            switch(data.specialRequirements) {
+                case 'pump': multiplier += 0.15; break;
+                case 'crane': multiplier += 0.2; break;
+                case 'weekend': multiplier += 0.1; break;
+                case 'rush': multiplier += 0.25; break;
+            }
+            
+            const volume = parseFloat(data.volume);
+            const pricePerYard = basePrice * multiplier;
+            const subtotal = volume * pricePerYard;
+            const deliveryFee = volume > 10 ? 0 : 50; // Free delivery over 10 yards
+            const total = subtotal + deliveryFee;
+            
+            // Format currency
+            const formatCurrency = (amount) => `$${amount.toFixed(2)}`;
+            
+            // Generate quote details
+            const quoteDetails = `
+                <div class="quote-item">
+                    <strong>Project:</strong> ${data.projectName}<br>
+                    <strong>Customer:</strong> ${data.customerName}
+                </div>
+                <div class="quote-item">
+                    <strong>Concrete Type:</strong> ${data.concreteType.replace('-', ' ').toUpperCase()}<br>
+                    <strong>Volume:</strong> ${data.volume} cubic yards
+                </div>
+                <div class="quote-item">
+                    <strong>Price per Yard:</strong> ${formatCurrency(pricePerYard)}<br>
+                    <strong>Subtotal:</strong> ${formatCurrency(subtotal)}
+                </div>
+                <div class="quote-item">
+                    <strong>Delivery Fee:</strong> ${formatCurrency(deliveryFee)}<br>
+                    <strong>Total:</strong> ${formatCurrency(total)}
+                </div>
+                <div class="quote-item">
+                    <strong>Delivery Date:</strong> ${data.deliveryDate}<br>
+                    <strong>Time:</strong> ${data.deliveryTime}
+                </div>
+                <div class="quote-item">
+                    <strong>Location:</strong> ${data.location}<br>
+                    <strong>Special Req:</strong> ${data.specialRequirements}
+                </div>
+            `;
+            
+            document.getElementById('quoteDetails').innerHTML = quoteDetails;
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('quoteResult').style.display = 'block';
+            
+            // Scroll to result
+            document.getElementById('quoteResult').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Set minimum date to today
+        document.getElementById('deliveryDate').min = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
