@@ -3,8 +3,10 @@ package com.antiochbuilding.abmai.ui.components
 import android.graphics.Bitmap
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.webkit.WebViewAssetLoader
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,8 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import java.io.BufferedReader
-import java.io.InputStreamReader
 
 /**
  * Composable that displays a dashboard in a WebView.
@@ -73,6 +73,11 @@ fun DashboardWebView(
     Box(modifier = modifier.fillMaxSize()) {
         AndroidView(
             factory = { ctx ->
+                // Create WebViewAssetLoader to properly serve assets
+                val assetLoader = WebViewAssetLoader.Builder()
+                    .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(ctx))
+                    .build()
+
                 WebView(ctx).apply {
                     webView = this
 
@@ -91,6 +96,12 @@ fun DashboardWebView(
 
                     // Set WebViewClient for page navigation
                     webViewClient = object : WebViewClient() {
+                        override fun shouldInterceptRequest(
+                            view: WebView?,
+                            request: WebResourceRequest
+                        ): WebResourceResponse? {
+                            return assetLoader.shouldInterceptRequest(request.url)
+                        }
                         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                             super.onPageStarted(view, url, favicon)
                             isLoading = true
@@ -104,6 +115,15 @@ fun DashboardWebView(
 
                             // Inject timer tracking script
                             view?.evaluateJavascript(TIMER_TRACKING_SCRIPT, null)
+                        }
+
+                        override fun onReceivedError(
+                            view: WebView?,
+                            request: WebResourceRequest?,
+                            error: android.webkit.WebResourceError?
+                        ) {
+                            super.onReceivedError(view, request, error)
+                            android.util.Log.e("DashboardWebView", "WebView error: ${error?.description} at ${request?.url}")
                         }
 
                         override fun shouldOverrideUrlLoading(
@@ -125,6 +145,16 @@ fun DashboardWebView(
                         override fun onProgressChanged(view: WebView?, newProgress: Int) {
                             super.onProgressChanged(view, newProgress)
                             progress = newProgress / 100f
+                        }
+
+                        override fun onConsoleMessage(consoleMessage: android.webkit.ConsoleMessage?): Boolean {
+                            consoleMessage?.let {
+                                android.util.Log.d(
+                                    "WebViewConsole",
+                                    "${it.message()} -- From line ${it.lineNumber()} of ${it.sourceId()}"
+                                )
+                            }
+                            return true
                         }
                     }
 
@@ -151,26 +181,17 @@ fun DashboardWebView(
 }
 
 /**
- * Loads HTML content from the assets folder.
+ * Loads HTML content from the assets folder using WebViewAssetLoader.
+ * Uses https://appassets.androidplatform.net domain which is intercepted
+ * by WebViewAssetLoader to serve local assets securely.
  */
 private fun loadHtmlFromAssets(webView: WebView, assetPath: String) {
     try {
-        val inputStream = webView.context.assets.open(assetPath)
-        val bufferedReader = BufferedReader(InputStreamReader(inputStream))
-        val htmlContent = bufferedReader.use { it.readText() }
-
-        // Get base URL for loading related resources
-        val baseUrl = "file:///android_asset/${assetPath.substringBeforeLast("/")}"
-
-        webView.loadDataWithBaseURL(
-            baseUrl,
-            htmlContent,
-            "text/html",
-            "UTF-8",
-            null
-        )
-
-        android.util.Log.d("DashboardWebView", "Loading dashboard: $assetPath")
+        // Use https scheme with appassets.androidplatform.net domain
+        // WebViewAssetLoader intercepts this and serves from local assets
+        val url = "https://appassets.androidplatform.net/assets/$assetPath"
+        webView.loadUrl(url)
+        android.util.Log.d("DashboardWebView", "Loading dashboard: $url")
     } catch (e: Exception) {
         android.util.Log.e("DashboardWebView", "Error loading HTML from assets", e)
     }

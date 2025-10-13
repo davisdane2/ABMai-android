@@ -247,11 +247,11 @@
             }
         }
 
-        // Open CHASCO connection in Safari
+        // Open CHASCO connection in default browser
         function openInSafari() {
-            console.log('Opening CHASCO in Safari');
-            // This will prompt iOS to open Safari
-            window.location.href = 'https://10.52.10.100';
+            console.log('Opening CHASCO in default browser');
+            // This will open in the device's default browser (Safari on iOS, Chrome/default on Android)
+            window.open('https://10.52.10.100', '_blank');
         }
     </script>
 </body>
