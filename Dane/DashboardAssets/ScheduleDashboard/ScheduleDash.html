@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Scheduling Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #5B21B6;
+            font-size: 1.5em;
+            margin-bottom: 8px;
+        }
+
+        .powered-by {
+            color: #F97316;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .last-updated {
+            color: #64748b;
+            font-size: 0.8em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .work-point-section {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .work-point-header {
+            background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);
+            color: white;
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .work-point-title {
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+
+        .work-point-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+        }
+
+        .schedule-grid {
+            display: grid;
+            gap: 8px;
+        }
+
+        .schedule-card {
+            background: #f8fafc;
+            border-left: 3px solid #F97316;
+            border-radius: 6px;
+            padding: 12px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .schedule-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .schedule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .driver-name {
+            font-size: 1em;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .start-time {
+            background: #7C3AED;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.8em;
+        }
+
+        .schedule-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #64748b;
+            font-size: 0.8em;
+        }
+
+        .detail-value {
+            color: #334155;
+            font-size: 0.8em;
+        }
+
+        .truck-badge {
+            background: #F97316;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: 600;
+            display: inline-block;
+            font-size: 0.8em;
+        }
+
+        .notes {
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 8px;
+            font-size: 0.8em;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            white-space: pre-wrap;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: white;
+            font-size: 1em;
+        }
+
+        .error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.3em;
+            }
+            
+            .schedule-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+            
+            .schedule-details {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+            
+            .work-point-title {
+                font-size: 1em;
+            }
+            
+            .driver-name {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚚 Driver Scheduling Dashboard</h1>
+            <div class="powered-by">Powered by Claude™</div>
+            <div class="last-updated">
+                <span class="status-dot"></span>
+                <span id="lastUpdated">Loading...</span>
+            </div>
+        </div>
+
+        <div id="dashboard">
+            <div class="loading">Loading schedule data...</div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Supabase client
+        const SUPABASE_URL = 'https://ntgxamggdtolnlevskjb.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im50Z3hhbWdnZHRvbG5sZXZza2piIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNTE3NDMsImV4cCI6MjA3NDgyNzc0M30.r18wk6hrD3Qr4PgoQXIqskDsJCKO9jvLQCHQDDtJQvI';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function loadSchedule() {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                
+                // Fetch today's schedules
+                const { data, error } = await supabase
+                    .from('driver_schedules')
+                    .select('driver_name, start_time, work_point, truck_name, raw_data, status')
+                    .eq('schedule_date', today)
+                    .eq('active', true)
+                    .eq('status', 'scheduled')
+                    .order('work_point', { ascending: true })
+                    .order('start_time', { ascending: true });
+
+                if (error) throw error;
+
+                displaySchedule(data);
+                updateLastUpdated();
+            } catch (error) {
+                console.error('Error loading schedule:', error);
+                document.getElementById('dashboard').innerHTML = `
+                    <div class="error">
+                        <strong>Error loading schedule:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        function displaySchedule(schedules) {
+            if (!schedules || schedules.length === 0) {
+                document.getElementById('dashboard').innerHTML = `
+                    <div class="work-point-section">
+                        <div class="no-data">No schedules found for today</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Group by work point
+            const grouped = schedules.reduce((acc, schedule) => {
+                const workPoint = schedule.work_point || 'Unassigned';
+                if (!acc[workPoint]) acc[workPoint] = [];
+                acc[workPoint].push(schedule);
+                return acc;
+            }, {});
+
+            // Sort work points
+            const sortedWorkPoints = Object.keys(grouped).sort();
+
+            // Build HTML
+            let html = '';
+            sortedWorkPoints.forEach(workPoint => {
+                const scheduleList = grouped[workPoint];
+                html += `
+                    <div class="work-point-section">
+                        <div class="work-point-header">
+                            <div class="work-point-title">${workPoint}</div>
+                            <div class="work-point-count">${scheduleList.length} driver${scheduleList.length !== 1 ? 's' : ''}</div>
+                        </div>
+                        <div class="schedule-grid">
+                            ${scheduleList.map(schedule => createScheduleCard(schedule)).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('dashboard').innerHTML = html;
+        }
+
+        function createScheduleCard(schedule) {
+            const notes = schedule.raw_data?.notes || '';
+            const truck = schedule.truck_name ? `<span class="truck-badge">Truck ${schedule.truck_name}</span>` : '<span class="detail-value">No truck assigned</span>';
+            const time = schedule.start_time ? formatTime(schedule.start_time) : 'Not scheduled';
+
+            return `
+                <div class="schedule-card">
+                    <div class="schedule-header">
+                        <div class="driver-name">${schedule.driver_name || 'Unknown Driver'}</div>
+                        <div class="start-time">${time}</div>
+                    </div>
+                    <div class="schedule-details">
+                        <div class="detail-label">Truck:</div>
+                        <div>${truck}</div>
+                    </div>
+                    ${notes ? `<div class="notes"><strong>Notes:</strong> ${notes}</div>` : ''}
+                </div>
+            `;
+        }
+
+        function formatTime(timeString) {
+            if (!timeString) return 'N/A';
+            const date = new Date(timeString);
+            return date.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+        }
+
+        function updateLastUpdated() {
+            const now = new Date();
+            const formatted = now.toLocaleString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+            document.getElementById('lastUpdated').textContent = `Last updated: ${formatted}`;
+        }
+
+        // Load schedule on page load
+        loadSchedule();
+
+        // Refresh every 5 minutes
+        setInterval(loadSchedule, 5 * 60 * 1000);
+    </script>
+</body>
+</html>
