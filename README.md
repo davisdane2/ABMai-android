@@ -1,16 +1,22 @@
 # ABM.ai - Android
 
 > Real-time operational intelligence for asphalt, concrete, and materials management - Android Platform
+
 **ABM.ai for Android** is the Android port of the native iOS application that brings your entire operations ecosystem to your mobile device. Access live inventory levels, demand forecasts, driver schedules, AI-powered tools, and plant control systems—all from one interface.
 
----
-## 🚧 Project Status
-Officially at the same stage as iOS ABM.ai v1.4
+<p align="center">
+  <img src="GithubUpdates/android1.png" width="300" alt="ABM.ai on Android Home Screen" />
+  <img src="GithubUpdates/android2.png" width="300" alt="ABM.ai Dashboard Interface" />
+</p>
 
-The original iOS application has been successfully deployed on TestFlight and is now being adapted for Android. This repository contains the source code foundation from the iOS version that will be transformed into a native Android application.
+---
+## 📱 Project Status
+**Now Available for Android!**
+
+The Android version is now functional and ready for testing. Download the latest release APK from the [Releases](https://github.com/davisdane2/ABMai-android/releases) page to install on your Android device.
 
 ## 📊 Dashboard Features
-The Android version will include all features from the iOS application:
+The Android version includes all features from the iOS application:
 ### Real-Time Dashboards
 
 #### **Inventory Management**
