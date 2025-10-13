@@ -1,5 +1,6 @@
 package com.antiochbuilding.abmai.ui.screens
 
+import android.graphics.BitmapFactory
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -12,6 +13,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -56,6 +58,9 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -70,6 +75,7 @@ import com.antiochbuilding.abmai.ui.theme.GradientEnd
 import com.antiochbuilding.abmai.ui.theme.GradientMiddle
 import com.antiochbuilding.abmai.ui.theme.GradientStart
 import kotlinx.coroutines.delay
+import java.io.InputStream
 
 /**
  * Main dashboard screen showing categories and dashboard cards.
@@ -208,6 +214,54 @@ private fun CategorySection(
 }
 
 /**
+ * Dashboard icon that displays either an emoji or a PNG logo from assets.
+ */
+@Composable
+private fun DashboardIcon(
+    iconName: String,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+
+    // Check if it's a PNG file
+    if (iconName.endsWith(".png", ignoreCase = true)) {
+        // Load image from assets
+        val bitmap = remember(iconName) {
+            try {
+                val inputStream: InputStream = context.assets.open("dashboards/Dashboardlogos/$iconName")
+                BitmapFactory.decodeStream(inputStream)?.asImageBitmap()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
+
+        if (bitmap != null) {
+            Image(
+                bitmap = bitmap,
+                contentDescription = "Dashboard logo",
+                modifier = modifier,
+                contentScale = ContentScale.Fit
+            )
+        } else {
+            // Fallback to default emoji if image fails to load
+            Text(
+                text = "📊",
+                fontSize = 40.sp,
+                modifier = modifier
+            )
+        }
+    } else {
+        // Display as emoji
+        Text(
+            text = iconName.takeIf { it.isNotEmpty() } ?: "📊",
+            fontSize = 40.sp,
+            modifier = modifier
+        )
+    }
+}
+
+/**
  * Glassmorphic dashboard card.
  */
 @Composable
@@ -244,11 +298,12 @@ private fun DashboardCard(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                // Icon
-                Text(
-                    text = dashboard.icon.takeIf { it.length <= 2 } ?: "📊",
-                    fontSize = 40.sp,
-                    modifier = Modifier.padding(top = 8.dp)
+                // Icon - either emoji or PNG logo
+                DashboardIcon(
+                    iconName = dashboard.icon,
+                    modifier = Modifier
+                        .size(60.dp)
+                        .padding(top = 8.dp)
                 )
 
                 // Name and description
@@ -325,14 +380,19 @@ private fun DashboardDetailScreen(
             )
         }
     ) { paddingValues ->
-        DashboardWebView(
-            htmlPath = dashboard.htmlPath,
-            modifier = Modifier.padding(paddingValues),
-            onNavigationStateChanged = { back, forward ->
-                canGoBack = back
-                canGoForward = forward
-            }
-        )
+        // Use native Compose for CHASCOmobile, WebView for others
+        if (dashboard.name == "CHASCOmobile") {
+            CHASCOmobileScreen()
+        } else {
+            DashboardWebView(
+                htmlPath = dashboard.htmlPath,
+                modifier = Modifier.padding(paddingValues),
+                onNavigationStateChanged = { back, forward ->
+                    canGoBack = back
+                    canGoForward = forward
+                }
+            )
+        }
     }
 }
 

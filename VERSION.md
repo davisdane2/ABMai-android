@@ -12,27 +12,9 @@
 
 ## Version History
 
-- **v1.4** (2025-10-12) - CHASCOmobile VPN integration with secure plant control access
-  - Added VPN connection workflow with safety validation
-  - Implemented warning modal for VPN requirements
-  - Integrated Safari browser launch for CHASCO plant controls (10.52.10.100)
-  - Added WebView navigation controls (back/forward/reload)
-  - Enhanced DashboardWebView with navigation policy handling
-  - Simplified CHASCOmobile HTML interface to image-based landing page
-- **v1.3** (2025-10-12) - Enhanced app icons and visual assets
-- **v1.2** (2025-10-12) - Fixed duplicate globals.css build error
-- **v1.1** (2025-10-12) - Glassmorphic UI design and enhanced AI tools
-- **v1.0** - Initial release with dashboard functionality
+- **v1.0** - Initial release of Android APK that has same features working as iOS v.1.4
 
 ## How to Update Version
 
-The app version is controlled by `MARKETING_VERSION` in the Xcode project settings.
+not sure where to look on android studio docs yet - maybe claude can see
 
-To update for the next build:
-
-```bash
-# Replace X.Y with the next version number
-sed -i '' 's/MARKETING_VERSION = X.Y;/MARKETING_VERSION = X.Z;/g' Dane.xcodeproj/project.pbxproj
-```
-
-Or manually edit `Dane.xcodeproj/project.pbxproj` and update all instances of `MARKETING_VERSION`.
