@@ -2,8 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
-    id("org.jetbrains.kotlin.plugin.compose")
-    kotlin("kapt")
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -13,7 +12,7 @@ android {
     defaultConfig {
         applicationId = "com.antiochbuilding.abmai"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 30
         versionCode = 1
         versionName = "1.0.0"
 
@@ -30,6 +29,15 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+    }
+
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("x86_64", "arm64-v8a")
+            isUniversalApk = true
         }
     }
 
@@ -104,6 +112,8 @@ dependencies {
 
     // Coil for image loading
     implementation("io.coil-kt:coil-compose:2.5.0")
+
+
 
     // Accompanist for system UI
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")

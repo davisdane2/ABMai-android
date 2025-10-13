@@ -156,3 +156,6 @@ captures/
 
 # Android NDK
 obj/
+
+.gemini/
+gha-creds-*.json

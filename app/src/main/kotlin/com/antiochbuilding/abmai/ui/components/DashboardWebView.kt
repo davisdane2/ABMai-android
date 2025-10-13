@@ -6,7 +6,6 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -44,7 +42,6 @@ fun DashboardWebView(
     modifier: Modifier = Modifier,
     onNavigationStateChanged: (canGoBack: Boolean, canGoForward: Boolean) -> Unit = { _, _ -> }
 ) {
-    val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var isLoading by remember { mutableStateOf(true) }
     var progress by remember { mutableFloatStateOf(0f) }
@@ -141,7 +138,7 @@ fun DashboardWebView(
         // Loading progress indicator
         if (isLoading && progress < 1f) {
             LinearProgressIndicator(
-                progress = { progress },
+                progress = progress,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(2.dp)
@@ -183,7 +180,7 @@ private fun loadHtmlFromAssets(webView: WebView, assetPath: String) {
  * Pauses the dashboard by clearing all JavaScript timers.
  */
 private fun pauseDashboard(webView: WebView) {
-    webView.evaluateJavascript(PAUSE_SCRIPT) { result ->
+    webView.evaluateJavascript(PAUSE_SCRIPT) { _ ->
         android.util.Log.d("DashboardWebView", "Dashboard paused")
     }
 }
@@ -192,7 +189,7 @@ private fun pauseDashboard(webView: WebView) {
  * Resumes the dashboard and optionally triggers a refresh.
  */
 private fun resumeDashboard(webView: WebView) {
-    webView.evaluateJavascript(RESUME_SCRIPT) { result ->
+    webView.evaluateJavascript(RESUME_SCRIPT) { _ ->
         android.util.Log.d("DashboardWebView", "Dashboard resumed")
     }
 }
