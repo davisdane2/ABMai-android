@@ -1,3 +1,6 @@
+#UPDATE - 10-17-2025
+PAUSING DEVELOPMENT ON ANDROID APP TO FOCUS ON iOS MAIN FUNCTIONALITY AND OFFER A BASIC WEBAPP ALTERNATIVE FOR NON iOS USERS.
+
 # ABM.ai - Android
 
 > Real-time operational intelligence for asphalt, concrete, and materials management - Android Platform
