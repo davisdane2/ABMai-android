@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>ABM Wallet Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #8B5CF6;
+            --primary-light: #A78BFA;
+            --primary-dark: #7C3AED;
+            --accent: #D946EF;
+            --background: #0A0A0A;
+            --card-bg: #1A1A1A;
+            --border: #2A2A2A;
+            --text: #FFFFFF;
+            --text-muted: #A1A1AA;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --yellow: #EAB308;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(217, 70, 239, 0.1) 100%);
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-light);
+        }
+
+        h1 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .warning-box {
+            background: rgba(234, 179, 8, 0.1);
+            border: 2px solid rgba(234, 179, 8, 0.5);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 40px 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .warning-box h3 {
+            color: var(--yellow);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-icon {
+            width: 28px;
+            height: 28px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card h2 {
+            font-size: 28px;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .card h3 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .coin-showcase {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(217, 70, 239, 0.05) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 20px;
+            padding: 40px 24px;
+            margin: 40px 20px;
+            text-align: center;
+        }
+
+        .coin-logo {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 24px;
+            filter: drop-shadow(0 0 40px rgba(139, 92, 246, 0.3));
+        }
+
+
+        .step-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .step-content {
+            background: rgba(139, 92, 246, 0.05);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .step-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .step-content li {
+            padding: 8px 0;
+            color: var(--text-muted);
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .section {
+            padding: 40px 20px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .icon-circle {
+            width: 60px;
+            height: 60px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 24px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading-pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 32px; }
+            .section { padding: 30px 20px; }
+            .coin-logo { width: 160px; height: 160px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero">
+        <span class="badge">Employee Guide</span>
+        <h1>Solana Wallet Setup Guide</h1>
+        <p class="subtitle">Learn how to download, set up your crypto wallet, and explore digital assets on devnet</p>
+    </div>
+
+    <!-- Devnet Warning -->
+    <div class="warning-box">
+        <h3>
+            <svg class="warning-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            DEVNET ONLY - NO REAL VALUE
+        </h3>
+        <p style="font-weight: 600; margin-bottom: 8px;">*DEVNET tokens are on a subchain of Solana and hold NO value.</p>
+        <p style="font-size: 14px; color: var(--text-muted);">
+            This platform uses Solana Devnet for testing purposes only. Any tokens or transactions have absolutely no monetary value.
+        </p>
+    </div>
+
+    <!-- Interactive Trading Platform Link -->
+    <div style="text-align: center; margin: 40px 20px;">
+        <a href="https://wallet-wise-trade.lovable.app/" target="_blank" class="btn" style="display: inline-flex; align-items: center; gap: 8px; font-size: 18px; padding: 16px 32px;">
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink: 0;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+            Launch Interactive Trading Platform
+        </a>
+        <p style="color: var(--text-muted); margin-top: 12px; font-size: 14px;">Practice trading with devnet tokens in a safe environment</p>
+    </div>
+
+    <!-- ABM Coin Showcase -->
+    <div class="coin-showcase">
+        <span class="badge">Featured Token</span>
+        <h2 style="margin-bottom: 12px;">ABM Coin</h2>
+        <p style="color: var(--text-muted); margin-bottom: 30px;">Our company's educational trading token on Solana Devnet</p>
+
+        <img src="https://www.antiochbuilding.com/ai/abm-token-logo.png" alt="ABM Token" class="coin-logo" onerror="this.style.display='none'">
+
+        <div style="max-width: 500px; margin: 0 auto; text-align: left;">
+            <div style="margin-bottom: 16px;">
+                <h4 style="color: var(--text-muted); font-size: 12px; margin-bottom: 4px;">Token Address</h4>
+                <p style="font-family: monospace; font-size: 12px; background: rgba(139, 92, 246, 0.1); padding: 12px; border-radius: 8px; word-break: break-all;">
+                    Hk3Gecyij37dDzp2n92oCRyMDMFkidpyHQM9ix4wMCSu
+                </p>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                    <h4 style="color: var(--text-muted); font-size: 12px; margin-bottom: 4px;">Decimals</h4>
+                    <p style="font-size: 18px; font-weight: 600;">9</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--text-muted); font-size: 12px; margin-bottom: 4px;">Network</h4>
+                    <span class="badge" style="margin: 0;">Solana Devnet</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Step-by-Step Guide -->
+    <div class="section" style="background: rgba(139, 92, 246, 0.02);">
+        <div class="container">
+            <h2 style="font-size: 32px; margin-bottom: 30px; text-align: center;">Step-by-Step Guide</h2>
+
+            <!-- Step 1 -->
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div>
+                        <div class="step-title">Download Wallet App</div>
+                        <p style="color: var(--text-muted); font-size: 14px;">Download Solflare or Phantom wallet</p>
+                    </div>
+                </div>
+                <div class="step-content">
+                    <p style="font-weight: 600; margin-bottom: 8px;">Solflare - Official Download:</p>
+                    <ul>
+                        <li>• <strong>iOS:</strong> Apple App Store</li>
+                        <li>• <strong>Android:</strong> Google Play Store</li>
+                        <li>• <strong>Browser:</strong> Chrome Web Store</li>
+                    </ul>
+                    <p style="font-weight: 600; margin: 16px 0 8px;">Phantom - Official Download:</p>
+                    <ul>
+                        <li>• <strong>iOS:</strong> Apple App Store</li>
+                        <li>• <strong>Android:</strong> Google Play Store</li>
+                        <li>• <strong>Browser:</strong> Chrome, Firefox, Brave, Edge</li>
+                    </ul>
+                </div>
+                <div class="info-box">
+                    <p style="font-size: 14px;"><strong>Tip:</strong> Both wallets work great with Solana! Choose the one you prefer.</p>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div>
+                        <div class="step-title">Create Your Wallet</div>
+                        <p style="color: var(--text-muted); font-size: 14px;">Set up a new wallet or import existing</p>
+                    </div>
+                </div>
+                <div class="step-content">
+                    <p style="font-weight: 600; margin-bottom: 8px;">Choose one option:</p>
+                    <ul>
+                        <li>• <strong>Create New:</strong> Generate fresh wallet with new seed phrase</li>
+                        <li>• <strong>Import Existing:</strong> Use your 12/24 word recovery phrase</li>
+                    </ul>
+                </div>
+                <div class="warning-box" style="margin: 16px 0 0;">
+                    <p style="font-size: 14px; margin: 0;"><strong>Security:</strong> Write down your recovery phrase on paper and store it safely. Never share it!</p>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div>
+                        <div class="step-title">Switch to Devnet</div>
+                        <p style="color: var(--text-muted); font-size: 14px;">Change network to Solana Devnet</p>
+                    </div>
+                </div>
+                <div class="step-content">
+                    <p style="font-weight: 600; margin-bottom: 8px;">Network Settings:</p>
+                    <ul>
+                        <li>• Open wallet settings</li>
+                        <li>• Find "Network" or "RPC" settings</li>
+                        <li>• Select "Devnet" from options</li>
+                        <li>• Confirm the network switch</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div>
+                        <div class="step-title">Connect to Platform</div>
+                        <p style="color: var(--text-muted); font-size: 14px;">Link wallet to company platform</p>
+                    </div>
+                </div>
+                <div class="step-content">
+                    <ul>
+                        <li>• Navigate to company trading portal</li>
+                        <li>• Click "Select Wallet" button</li>
+                        <li>• Choose "Solflare" or "Phantom"</li>
+                        <li>• Approve connection in wallet app</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <div>
+                        <div class="step-title">Start Learning</div>
+                        <p style="color: var(--text-muted); font-size: 14px;">Practice with devnet tokens safely</p>
+                    </div>
+                </div>
+                <div class="step-content">
+                    <ul>
+                        <li>• View approved token listings</li>
+                        <li>• Practice send/receive transactions</li>
+                        <li>• Monitor wallet activity</li>
+                        <li>• Learn blockchain concepts risk-free</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overview Features -->
+    <div class="section">
+        <div class="container">
+            <h2 style="font-size: 32px; margin-bottom: 30px; text-align: center;">Overview</h2>
+            <div class="grid-2">
+                <div class="feature-box">
+                    <div class="icon-circle">📱</div>
+                    <h3>Download App</h3>
+                    <p style="color: var(--text-muted); font-size: 14px;">Install wallet from official sources</p>
+                </div>
+                <div class="feature-box">
+                    <div class="icon-circle">👛</div>
+                    <h3>Setup Wallet</h3>
+                    <p style="color: var(--text-muted); font-size: 14px;">Create your secure crypto wallet</p>
+                </div>
+                <div class="feature-box">
+                    <div class="icon-circle">🔄</div>
+                    <h3>Start Learning</h3>
+                    <p style="color: var(--text-muted); font-size: 14px;">Practice with devnet tokens</p>
+                </div>
+                <div class="feature-box">
+                    <div class="icon-circle">🎓</div>
+                    <h3>Educational</h3>
+                    <p style="color: var(--text-muted); font-size: 14px;">Learn crypto safely with no risk</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Info -->
+    <div class="section" style="background: rgba(139, 92, 246, 0.02);">
+        <div class="container">
+            <div class="card">
+                <h2 style="margin-bottom: 20px;">🛡️ Security Best Practices</h2>
+                <div class="grid-2">
+                    <div>
+                        <h4 style="color: var(--success); margin-bottom: 12px;">✓ Do:</h4>
+                        <ul style="color: var(--text-muted); font-size: 14px; list-style: none;">
+                            <li>• Keep recovery phrase offline</li>
+                            <li>• Use strong, unique passwords</li>
+                            <li>• Verify all transactions</li>
+                            <li>• Download from official sources</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: #EF4444; margin-bottom: 12px;">✗ Don't:</h4>
+                        <ul style="color: var(--text-muted); font-size: 14px; list-style: none;">
+                            <li>• Share your seed phrase</li>
+                            <li>• Use public WiFi for transactions</li>
+                            <li>• Click suspicious links</li>
+                            <li>• Store keys in cloud/email</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

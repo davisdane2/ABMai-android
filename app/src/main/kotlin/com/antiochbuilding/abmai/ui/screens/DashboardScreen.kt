@@ -1,6 +1,8 @@
 package com.antiochbuilding.abmai.ui.screens
 
+import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -33,6 +35,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -68,6 +71,7 @@ import androidx.compose.ui.unit.sp
 import com.antiochbuilding.abmai.data.models.Dashboard
 import com.antiochbuilding.abmai.data.models.DashboardCategory
 import com.antiochbuilding.abmai.data.models.DashboardRepository
+import com.antiochbuilding.abmai.data.models.getAppVersion
 import com.antiochbuilding.abmai.ui.components.DashboardWebView
 import com.antiochbuilding.abmai.ui.theme.GlassBackground
 import com.antiochbuilding.abmai.ui.theme.GlassStroke
@@ -144,6 +148,30 @@ private fun DashboardListScreen(
                         fontWeight = FontWeight.Medium,
                         color = Color.White.copy(alpha = 0.9f)
                     )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    val context = LocalContext.current
+                    val openUrl = { url: String ->
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        context.startActivity(intent)
+                    }
+                    Text(
+                        text = "View on web",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White.copy(alpha = 0.9f),
+                        modifier = Modifier.clickable { openUrl("https://www.antiochbuilding.com/dashboard") }
+                    )
+                }
+            }
+
+            // Global update badge
+            val context = LocalContext.current
+            val (versionName, _) = getAppVersion(context)
+            val globalUpdateVersion = "1.72"
+            val globalUpdateMessage = "New in v1.72 - all dashboards re-factored and some may launch externally in Safari while being integrated"
+            if (versionName == globalUpdateVersion) {
+                item {
+                    GlobalUpdateBadge(message = globalUpdateMessage)
                 }
             }
 
@@ -269,10 +297,22 @@ private fun DashboardCard(
     dashboard: Dashboard,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    val openUrl = { url: String ->
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        context.startActivity(intent)
+    }
+
     Card(
         modifier = Modifier
             .size(width = 180.dp, height = 160.dp)
-            .clickable(onClick = onClick),
+            .clickable {
+                if (dashboard.openInSafari) {
+                    openUrl(dashboard.htmlPath)
+                } else {
+                    onClick()
+                }
+            },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = GlassBackground
@@ -323,6 +363,23 @@ private fun DashboardCard(
                         color = Color.White.copy(alpha = 0.7f),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+
+            // "Recently Updated" badge
+            if (dashboard.showRecentlyUpdatedBadge(context)) {
+                Badge(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(4.dp),
+                    containerColor = MaterialTheme.colorScheme.primary
+                ) {
+                    Text(
+                        text = "New",
+                        color = Color.White,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
@@ -454,6 +511,39 @@ private fun AnimatedGradientBackground() {
                 ),
                 radius = circleRadius,
                 center = Offset(size.width * 0.7f, size.height * (0.6f - offset1 * 0.15f))
+            )
+        }
+    }
+}
+
+@Composable
+private fun GlobalUpdateBadge(message: String) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 8.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = GlassBackground
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        )
+    ) {
+        Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.Refresh,
+                contentDescription = "Updated",
+                tint = Color.White
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = message,
+                color = Color.White,
+                fontSize = 14.sp
             )
         }
     }

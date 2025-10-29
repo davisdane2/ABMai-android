@@ -1,5 +1,6 @@
 package com.antiochbuilding.abmai.data.models
 
+import android.content.Context
 import java.util.UUID
 
 /**
@@ -13,8 +14,15 @@ data class Dashboard(
     val description: String,
     val icon: String,
     val htmlPath: String,
-    val category: DashboardCategory
-)
+    val category: DashboardCategory,
+    val recentlyUpdatedInVersion: String?,
+    val openInSafari: Boolean
+) {
+    fun showRecentlyUpdatedBadge(context: Context): Boolean {
+        val (versionName, _) = getAppVersion(context)
+        return recentlyUpdatedInVersion == versionName
+    }
+}
 
 /**
  * Categories of dashboards available in the application.
@@ -22,10 +30,11 @@ data class Dashboard(
  */
 enum class DashboardCategory(val displayName: String) {
     INVENTORY("Inventory"),
-    DEMAND("Product Demands"),
+    DEMAND("Product Demand Dashboards"),
     OPERATIONS("Schedule & DF"),
-    AI("AI ChatBot Tools"),
-    CONTROL("CHASCOmobile");
+    AI("AI Tools + ChatBot Links"),
+    CONTROL("CHASCOmobile"),
+    EXPERIMENTAL("ABMcoin");
 
     companion object {
         fun fromDisplayName(name: String): DashboardCategory? {
@@ -44,95 +53,157 @@ object DashboardRepository {
         // Inventory Dashboards
         Dashboard(
             name = "Chameleon Inventory",
-            description = "Pittsburg & Brentwood chameleon inventory",
-            icon = "🦎",
-            htmlPath = "dashboards/ChameleonInventory/chameleon.html",
-            category = DashboardCategory.INVENTORY
+            description = "Chameleon Inventory for BW & Pit",
+            icon = "chameleon.png",
+            htmlPath = "https://v0-next-js-dashboard-page-murex.vercel.app/",
+            category = DashboardCategory.INVENTORY,
+            recentlyUpdatedInVersion = "1.70",
+            openInSafari = true
         ),
         Dashboard(
             name = "Admix Inventory",
-            description = "Admixture & Dry Additives inventory Pit&BW",
+            description = "Admixture (Dry Goods) Inventory for Bw & Pit",
             icon = "cemexlogo.png",
-            htmlPath = "dashboards/AdmixInventory/Admix.html",
-            category = DashboardCategory.INVENTORY
+            htmlPath = "https://v0-admixture-inventory-tracker.vercel.app/admixture",
+            category = DashboardCategory.INVENTORY,
+            recentlyUpdatedInVersion = "1.70",
+            openInSafari = true
         ),
         Dashboard(
             name = "Inventory Submission",
-            description = "Update Inventories for your department",
+            description = "Update Inventories For BW & Pit + RAP area",
             icon = "deister.png",
-            htmlPath = "dashboards/InventorySubmission/InventorySubmission.html",
-            category = DashboardCategory.INVENTORY
+            htmlPath = "InventorySubmission.html",
+            category = DashboardCategory.INVENTORY,
+            recentlyUpdatedInVersion = "1.70",
+            openInSafari = false
         ),
 
         // Weekly Demand Dashboards
         Dashboard(
+            name = "All Raw Material Demands",
+            description = "Combined Raw Material Demands",
+            icon = "rawmatlogo.png",
+            htmlPath = "https://www.antiochbuilding.com/abminfo/abminfo/conc.html",
+            category = DashboardCategory.DEMAND,
+            recentlyUpdatedInVersion = "1.70",
+            openInSafari = true
+        ),
+        Dashboard(
             name = "Concrete Demand",
-            description = "Weekly concrete demand dashboard",
+            description = "Weekly Concrete Demand",
             icon = "coneco.png",
-            htmlPath = "dashboards/ConcreteDemandWeekly/ConcWeekly.html",
-            category = DashboardCategory.DEMAND
+            htmlPath = "https://jonel-demand-dash.lovable.app/",
+            category = DashboardCategory.DEMAND,
+            recentlyUpdatedInVersion = "1.70",
+            openInSafari = true
+        ),
+        Dashboard(
+            name = "Concrete Demand (altView)",
+            description = "More info in a single page",
+            icon = "jonel.png",
+            htmlPath = "ConcDemandWeekalt.html",
+            category = DashboardCategory.DEMAND,
+            recentlyUpdatedInVersion = "1.70",
+            openInSafari = false
         ),
         Dashboard(
             name = "Asphalt Demand",
-            description = "Weekly asphalt demand dashboard",
+            description = "Weekly Asphalt Demand",
             icon = "astelogo.png",
-            htmlPath = "dashboards/AsphaltDemandWeekly/AsphaltWeekly.html",
-            category = DashboardCategory.DEMAND
+            htmlPath = "https://jonel-demand-dash.lovable.app/",
+            category = DashboardCategory.DEMAND,
+            recentlyUpdatedInVersion = "1.70",
+            openInSafari = true
         ),
         Dashboard(
             name = "AC Oil Demand",
-            description = "Weekly AC oil tracking",
+            description = "Weekly AC OIL Demand",
             icon = "acoillogo.png",
-            htmlPath = "dashboards/ACoilWeekly/ACoilWeekly.html",
-            category = DashboardCategory.DEMAND
+            htmlPath = "https://v0-next-js-dashboard-with-supabase.vercel.app/asphalt-oil",
+            category = DashboardCategory.DEMAND,
+            recentlyUpdatedInVersion = "1.70",
+            openInSafari = true
         ),
         Dashboard(
             name = "Powder Demand",
-            description = "Weekly Cement/Slag/Flyash powder demand",
+            description = "Weekly Cement/Slag/Flyash Demand",
             icon = "cementlogo.png",
-            htmlPath = "dashboards/PowderWeekly/PowderWeekly.html",
-            category = DashboardCategory.DEMAND
+            htmlPath = "PowderWeekly.html",
+            category = DashboardCategory.DEMAND,
+            recentlyUpdatedInVersion = "1.70",
+            openInSafari = false
         ),
-        Dashboard(
-            name = "All Raw Material Demands",
-            description = "Combined raw material demand",
-            icon = "rawmatlogo.png",
-            htmlPath = "dashboards/RawMaterialDemandCombWeekly/RawWeeklyComb.html",
-            category = DashboardCategory.DEMAND
-        ),
+
 
         // Operations
         Dashboard(
             name = "Driver Schedule",
-            description = "Driver scheduling dashboard",
+            description = "Driver Start Times & Schedule",
             icon = "dflogo.png",
-            htmlPath = "dashboards/ScheduleDashboard/ScheduleDash.html",
-            category = DashboardCategory.OPERATIONS
+            htmlPath = "ScheduleDash.html",
+            category = DashboardCategory.OPERATIONS,
+            recentlyUpdatedInVersion = "1.70",
+            openInSafari = false
+        ),
+        Dashboard(
+            name = "Samsara Live Truck Link",
+            description = "Create or view a truck navigation link",
+            icon = "samsarabutton.png",
+            htmlPath = "https://v0-samsara-api-gui.vercel.app/",
+            category = DashboardCategory.OPERATIONS,
+            recentlyUpdatedInVersion = "1.72",
+            openInSafari = true
         ),
 
         // AI Tools
         Dashboard(
             name = "Concrete Quote AI",
-            description = "AI-powered concrete quotes",
+            description = "AI-powered Concrete Quick-Quote",
             icon = "zapierchat.png",
-            htmlPath = "dashboards/ConcreteQuoteAI/ConcQuoteBot.html",
-            category = DashboardCategory.AI
+            htmlPath = "https://concrete-price.zapier.app/",
+            category = DashboardCategory.AI,
+            recentlyUpdatedInVersion = "1.70",
+            openInSafari = true
         ),
         Dashboard(
             name = "Mix Design Assist",
-            description = "AI mix design assistance",
-            icon = "mixlogodesign.png",
-            htmlPath = "dashboards/MixDesignAssistAI/MixDesignAI.html",
-            category = DashboardCategory.AI
+            description = "AI Mix Design Selector",
+            icon = "mixgpt3.png",
+            htmlPath = "https://mix-design-assist.zapier.app/",
+            category = DashboardCategory.AI,
+            recentlyUpdatedInVersion = "1.70",
+            openInSafari = true
         ),
 
         // Plant Control
         Dashboard(
             name = "CHASCOmobile",
-            description = "Plant control interface for CHASCO asphalt plant controls",
+            description = "Plant Control Interface for CHASCO",
             icon = "chascologo.png",
-            htmlPath = "dashboards/CHASCOmobile/index.html",
-            category = DashboardCategory.CONTROL
+            htmlPath = "index.html",
+            category = DashboardCategory.CONTROL,
+            recentlyUpdatedInVersion = null,
+            openInSafari = false
+        ),
+        // Management
+        Dashboard(
+            name = "Margin Report",
+            description = "Management Margin Report",
+            icon = "margin.png",
+            htmlPath = "https://www.antiochbuilding.com/dashboard/marginpath.html",
+            category = DashboardCategory.CONTROL,
+            recentlyUpdatedInVersion = null,
+            openInSafari = true
+        ),
+        Dashboard(
+            name = "ABM coin",
+            description = "Experimental Devnet Information",
+            icon = "watchiconfinal.png",
+            htmlPath = "wallet-guide-ios.html",
+            category = DashboardCategory.EXPERIMENTAL,
+            recentlyUpdatedInVersion = "1.73",
+            openInSafari = false
         )
     )
 
